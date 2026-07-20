@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Interruptor de Radio</title>
+<style>
+  body { font-family: sans-serif; background:#111; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
+  .box { text-align:center; }
+  input { padding:10px; margin:6px; border-radius:6px; border:none; width:220px; }
+  button { padding:12px 24px; border-radius:8px; border:none; cursor:pointer; font-weight:bold; margin-top:10px; }
+  #onBtn { background:#2ecc71; }
+  #offBtn { background:#e74c3c; color:#fff; }
+  #status { margin-top:20px; font-size:14px; opacity:.7; }
+</style>
+</head>
+<body>
+<div class="box">
+  <div id="loginBox">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Correo"><br>
+    <input type="password" id="password" placeholder="Contraseña"><br>
+    <button id="loginBtn" style="background:#3498db;color:#fff;">Entrar</button>
+  </div>
+
+  <div id="switchBox" style="display:none;">
+    <h2>Control de Radio</h2>
+    <button id="onBtn">🔴 Encender transmisión</button><br>
+    <button id="offBtn">⏹ Apagar transmisión</button>
+    <div id="status"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyB0C7FWtOB5QxjtA9BnLdmizCSnCZtL1K4",
+    authDomain: "mi-tumblr-dibujos.firebaseapp.com",
+    projectId: "mi-tumblr-dibujos",
+    storageBucket: "mi-tumblr-dibujos.firebasestorage.app",
+    messagingSenderId: "255364407649",
+    appId: "1:255364407649:web:ac20e48cc41f2925b3a520"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  document.getElementById('loginBtn').onclick = () => {
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('password').value;
+    auth.signInWithEmailAndPassword(email, pass).catch(err => alert(err.message));
+  };
+
+  auth.onAuthStateChanged(user => {
+    document.getElementById('loginBox').style.display = user ? 'none' : 'block';
+    document.getElementById('switchBox').style.display = user ? 'block' : 'none';
+  });
+
+  document.getElementById('onBtn').onclick = () => {
+    db.collection('status').doc('radio').set({ live: true }).then(() => {
+      document.getElementById('status').textContent = '¡Estás EN VIVO! 🔴';
+    });
+  };
+  document.getElementById('offBtn').onclick = () => {
+    db.collection('status').doc('radio').set({ live: false }).then(() => {
+      document.getElementById('status').textContent = 'Transmisión apagada.';
+    });
+  };
+</script>
+</body>
+</html>
