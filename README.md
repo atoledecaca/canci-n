@@ -1,1 +1,1 @@
-esto solo es una playlist para mi tumblr
+acá dejo las canciones uwu
